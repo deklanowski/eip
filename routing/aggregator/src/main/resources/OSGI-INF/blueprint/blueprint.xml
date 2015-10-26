@@ -47,8 +47,8 @@
     </reference-list>
 
     <!-- Track all registered event publishers -->
-    <reference-list id="eventPublishers" availability="optional" activation="eager" interface="com.ipfli.ipf.messaging.api.EventPublisher">
-        <reference-listener ref="eventRouterFactory" bind-method="registerEventPublisher" unbind-method="unregisterEventPublisher" />
+    <reference-list id="messagePublishers" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.MessagePublisher">
+        <reference-listener ref="eventRouterFactory" bind-method="registerMessagePublisher" unbind-method="unregisterMessagePublisher" />
     </reference-list>
 
 

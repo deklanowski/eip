@@ -14,7 +14,7 @@
     <packaging>bundle</packaging>
     <name>${project.prefix} ${project.artifactId}</name>
 
-    <description>Service provider interface for EIP components</description>
+    <description>Message transformer example implementations</description>
 
     <properties>
         <bundle.namespace>${project.groupId}.${project.artifactId}</bundle.namespace>

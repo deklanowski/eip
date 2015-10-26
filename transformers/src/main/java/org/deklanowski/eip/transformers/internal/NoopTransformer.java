@@ -1,4 +1,4 @@
-package com.ipfli.eip.transformers.internal;
+package org.deklanowski.eip.transformers.internal;
 
 
 import org.deklanowski.eip.spi.Transformer;
