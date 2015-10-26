@@ -17,17 +17,17 @@ import org.deklanowski.eip.spi.Transformer;
 import org.deklanowski.eip.camel.MessagePublisherProcessor;
 
 /**
- * This route transforms, aggregates messages and publishes arbitrary message types.
+ * This route transforms, aggregates and publishes arbitrary message types.
  * Transformed messages must be {@link java.io.Serializable}. If the input message
  * has headers then these are propagated with the transformed message.
+ * It is also possible to apply post transformation filtering using the camel
+ *  <a href="http://people.apache.org/~dkulp/camel/simple.html">simple expression language</a>
  *
  * @author Declan Cox
  * @version $Id$
  * @since 01/10/2015
  */
 public final class AggregatingRouter extends RouteBuilder {
-
-    public static final Predicate NOOP_FILTER = exchange -> true;
 
     private final String routeFrom;
     private final String routeId;
@@ -39,7 +39,7 @@ public final class AggregatingRouter extends RouteBuilder {
     private final MessagePublisher publisher;
 
     /**
-     * Configurable aggregating router
+     * Configurable aggregating router.
      * @param routeId identifier for the route
      * @param routeFrom consuming uri
      * @param transformer {@link Transformer} implementation
@@ -108,18 +108,34 @@ public final class AggregatingRouter extends RouteBuilder {
     }
 
 
+    /**
+     * Advanced route configuration using core API's directly. This is for efficiency
+     * so that we don't have to build in some default no-op filtering in case filtering
+     * is not needed. In such a case the filter is simply not present. This is kind of
+     * tricky as the fluent API takes some getting used to. Otherwise you have to repeat
+     * DSL code within if-blocks and that's a PITA.
+     *
+     * @throws Exception
+     */
     @Override
     public void configure() throws Exception {
 
-            from(this.routeFrom)
-                    .tracing()
-                    .routeId(this.routeId)
-                    .bean(this.transformer)
-                    .filter(simple(this.filterExpression))
-                    .aggregate(constant(true), this.aggregationStrategy)
-                    .completionSize(this.completionSize)
-                    .completionInterval(this.completionIntervalMillis)
-                    .process(new MessagePublisherProcessor(this.publisher)).id(getPublishId());
+        RouteDefinition routeDefinition = from(this.routeFrom).routeId(this.routeId);
+
+
+        ProcessorDefinition processorDefinition = routeDefinition.bean(this.transformer);
+
+
+        // only build in a filter if the expression was specified.
+        if (StringUtils.isNotBlank(this.filterExpression)) {
+            processorDefinition = processorDefinition.filter(simple(this.filterExpression));
+        }
+
+
+        processorDefinition.aggregate(constant(true), this.aggregationStrategy)
+                .completionSize(this.completionSize)
+                .completionInterval(this.completionIntervalMillis)
+                .process(new MessagePublisherProcessor(this.publisher)).id(getPublishId());
     }
 
 

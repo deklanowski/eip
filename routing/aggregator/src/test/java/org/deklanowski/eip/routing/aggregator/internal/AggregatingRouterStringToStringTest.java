@@ -33,7 +33,7 @@ public class AggregatingRouterStringToStringTest extends CamelTestSupport
                 TEST_ROUTE,
                 DIRECT_START,
                 transformer,
-                "${in.header.id} == null",
+                "${in.header.id} == 'declan'",
                 1,
                 1000L,
                 new CamelMessagePublisher(producer)
@@ -44,7 +44,7 @@ public class AggregatingRouterStringToStringTest extends CamelTestSupport
     @org.junit.Test
     public void testRoute() throws InterruptedException {
         result.expectedMessageCount(1);
-        template.sendBody(DIRECT_START,"<name>test</name>");
+        template.sendBodyAndHeader(DIRECT_START,"<name>test</name>","id","declan");
         result.assertIsSatisfied();
     }
 

@@ -33,6 +33,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
     private static final String ROUTE_ID = "route.id";
     private static final String ROUTE_FROM_URI = "route.from.uri";
     private static final String ROUTE_TO_URI = "route.to.uri";
+    private static final String ROUTE_FILTER_EXPRESSION = "route.filter.expression";
     private static final String ROUTE_TO_PUBLISHER = "route.to.publisher";
     private static final String ROUTE_COMPLETION_SIZE = "route.completion-size";
     private static final String ROUTE_COMPLETION_INTERVAL_MILLIS = "route.completion-interval-millis";
@@ -265,7 +266,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
     }
 
     private String getFilterExpression(Dictionary<String, ?> properties) {
-        return "";
+        return (String) properties.get(ROUTE_FILTER_EXPRESSION);
     }
 
 

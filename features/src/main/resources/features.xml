@@ -5,9 +5,6 @@
           xsi:schemaLocation="
         http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
 
-    <repository>mvn:com.ipfli.ipf.messaging/features/${com.ipfli.ipf.messaging.version}/xml/features</repository>
-    <repository>mvn:com.ipfli.shared.bundles/features/${shared-bundles-features.version}/xml/features</repository>
-
     <feature name="eip" version="${project.version}" description="EIP Service Provider Interfaces">
         <feature version="${project.version}">eip-routing</feature>
         <feature version="${project.version}">eip-aggregators</feature>

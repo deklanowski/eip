@@ -33,7 +33,7 @@ public class AggregatingRouterIntegerToStringTest extends CamelTestSupport
                 TEST_ROUTE,
                 DIRECT_START,
                 transformer,
-                "${in.header.id}",
+                "${in.header.id} == null",
                 1,
                 1000L,
                 new CamelMessagePublisher(producer)
