@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="data-repository-sandbox-integration-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="
+        http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
+
+    <repository>mvn:com.ipfli.ipf.messaging/features/${com.ipfli.ipf.messaging.version}/xml/features</repository>
+    <repository>mvn:com.ipfli.shared.bundles/features/${shared-bundles-features.version}/xml/features</repository>
+
+    <feature name="eip" version="${project.version}" description="EIP Service Provider Interfaces">
+        <feature version="${project.version}">eip-routing</feature>
+        <feature version="${project.version}">eip-aggregators</feature>
+        <feature version="${project.version}">eip-transformers</feature>
+    </feature>
+
+    <feature name="eip-spi" version="${project.version}" description="EIP Service Provider Interfaces">
+        <bundle>mvn:org.deklanowski.eip/spi/${project.version}</bundle>
+    </feature>
+
+    <feature name="eip-routing" version="${project.version}" description="EIP routing support">
+        <feature version="${project.version}">eip-spi</feature>
+        <bundle>mvn:org.deklanowski.eip.routing/aggregator/${project.version}</bundle>
+        <feature version="[2.15,3)">camel-blueprint</feature>
+        <feature version="[2.15,3)">camel-kafka</feature>
+    </feature>
+
+    <feature name="eip-aggregators" version="${project.version}" description="EIP aggregation strategy implementations">
+        <feature version="${project.version}">eip-spi</feature>
+        <bundle>mvn:org.deklanowski.eip/aggregators/${project.version}</bundle>
+    </feature>
+
+    <feature name="eip-transformers" version="${project.version}" description="EIP transformer implementations">
+        <feature version="${project.version}">eip-spi</feature>
+        <bundle>mvn:org.deklanowski.eip/transformers/${project.version}</bundle>
+    </feature>
+
+</features>

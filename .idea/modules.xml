@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/routing/aggregator/aggregator.iml" filepath="$PROJECT_DIR$/routing/aggregator/aggregator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/build.iml" filepath="$PROJECT_DIR$/build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/camel/camel.iml" filepath="$PROJECT_DIR$/camel/camel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/features/features.iml" filepath="$PROJECT_DIR$/features/features.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parent/parent.iml" filepath="$PROJECT_DIR$/parent/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/routing/routing.iml" filepath="$PROJECT_DIR$/routing/routing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spi/spi.iml" filepath="$PROJECT_DIR$/spi/spi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/transformers/transformers.iml" filepath="$PROJECT_DIR$/transformers/transformers.iml" />
+    </modules>
+  </component>
+</project>

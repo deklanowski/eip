@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xmlns:camel="http://camel.apache.org/schema/blueprint"
+           xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+
+    <cm:property-placeholder persistent-id="org.deklanowski.eip.routes"
+                             update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="factory.pid"
+                         value="event_router"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+
+    <!--
+         The camel context we create here is injected into the eventRouterFactory and will host
+         all created router instances.
+    -->
+    <camelContext id="eventRouterContext"
+                  managementNamePattern="drs-#camelId#"
+                  xmlns="http://camel.apache.org/schema/blueprint" autoStartup="true">
+    </camelContext>
+
+    <!-- Managed service factory: this creates routing instances from (hot) deployed configuration files -->
+    <bean id="eventRouterFactory" class="org.deklanowski.eip.routing.aggregator.internal.factory.RouterManagedServiceFactory"
+          init-method="init"
+          destroy-method="destroy">
+        <property name="bundleContext" ref="blueprintBundleContext"/>
+        <property name="configurationPid" value="${factory.pid}"/>
+        <property name="camelContext" ref="eventRouterContext"/>
+    </bean>
+
+
+    <!-- Track all registered transformers -->
+    <reference-list id="transformers" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.Transformer">
+        <reference-listener ref="eventRouterFactory" bind-method="registerTransformer" unbind-method="unregisterTransformer" />
+    </reference-list>
+
+    <!-- Track all registered aggregation strategies -->
+    <reference-list id="aggregationStrategyFactories" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.AggregationStrategyFactory">
+        <reference-listener ref="eventRouterFactory" bind-method="registerAggregationStrategyFactory" unbind-method="unregisterAggregationStrategyFactory" />
+    </reference-list>
+
+    <!-- Track all registered event publishers -->
+    <reference-list id="eventPublishers" availability="optional" activation="eager" interface="com.ipfli.ipf.messaging.api.EventPublisher">
+        <reference-listener ref="eventRouterFactory" bind-method="registerEventPublisher" unbind-method="unregisterEventPublisher" />
+    </reference-list>
+
+
+</blueprint>
