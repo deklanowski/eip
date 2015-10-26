@@ -2,7 +2,6 @@ package org.deklanowski.eip.routing.aggregator.internal.factory;
 
 import com.google.common.base.Preconditions;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Predicate;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -259,7 +258,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
                 getFilterExpression(properties),
                 getAggregationStrategy(properties), Integer.parseInt((String) properties.get(ROUTE_COMPLETION_SIZE)),
                 Long.parseLong((String) properties.get(ROUTE_COMPLETION_INTERVAL_MILLIS)),
-                getEventPublisher(properties),
+                getMessagePublisher(properties),
                 camelContext);
 
         return dispatcher;
@@ -278,23 +277,23 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
      * @return {@link MessagePublisher} instance
      * @throws NullPointerException if it was not possible to choose a destination.
      */
-    private MessagePublisher getEventPublisher(Dictionary<String, ?> properties) {
-        String publisherKey = (String) properties.get(ROUTE_TO_PUBLISHER);
-        String toUri = (String) properties.get(ROUTE_TO_URI);
+    private MessagePublisher getMessagePublisher(Dictionary<String, ?> properties) {
+        String publisherServiceKey = (String) properties.get(ROUTE_TO_PUBLISHER);
+        String routeToUri = (String) properties.get(ROUTE_TO_URI);
 
         MessagePublisher publisher = null;
 
-        if (StringUtils.isNotBlank(publisherKey)) {
-           publisher = messagePublishers.get(publisherKey);
+        if (StringUtils.isNotBlank(publisherServiceKey)) {
+           publisher = messagePublishers.get(publisherServiceKey);
         }
 
         if (publisher == null) {
-            logger.debug("No registered publisher of type {} found",publisherKey);
-            if (toUri != null) {
-                logger.debug("Creating CamelEventPublisher instance with route destination {}",toUri);
+            logger.debug("No registered publisher of type {} found",publisherServiceKey);
+            if (routeToUri != null) {
+                logger.debug("Creating CamelEventPublisher instance with route destination {}",routeToUri);
                 ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
                 publisher = new CamelMessagePublisher(producerTemplate);
-                producerTemplate.setDefaultEndpointUri(toUri);
+                producerTemplate.setDefaultEndpointUri(routeToUri);
             }
         }
 
