@@ -37,7 +37,7 @@ public class AggregatingRouterStringToStringTest extends CamelTestSupport
                 1,
                 1000L,
                 new CamelMessagePublisher(producer),
-                errorEndpoint);
+                "log:deadletter");
     }
 
 

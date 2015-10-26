@@ -79,6 +79,7 @@ public final class AggregatingRouter extends RouteBuilder {
 
         this.publisher = Preconditions.checkNotNull(publisher,"Message publisher may not be null");
 
+        Preconditions.checkArgument(StringUtils.isNotBlank(deadletterChannel),"Deadletter channel URI is null or empty");
         this.deadletterChannel = deadletterChannel;
     }
 
@@ -121,6 +122,10 @@ public final class AggregatingRouter extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        errorHandler(deadLetterChannel(this.deadletterChannel)
+                .maximumRedeliveries(3)
+                .redeliveryDelay(5000));
+
         RouteDefinition routeDefinition = from(this.routeFrom).routeId(this.routeId);
 
 
@@ -140,9 +145,6 @@ public final class AggregatingRouter extends RouteBuilder {
 
 
 
-        errorHandler(deadLetterChannel(this.deadletterChannel)
-                .maximumRedeliveries(3)
-                .redeliveryDelay(5000));
     }
 
 
