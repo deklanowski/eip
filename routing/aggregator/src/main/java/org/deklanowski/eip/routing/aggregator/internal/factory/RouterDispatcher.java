@@ -28,6 +28,7 @@ public class RouterDispatcher {
     private final int completionSize;
     private final long completionIntervalMillis;
     private final MessagePublisher publisher;
+    private final String deadLetterChannel;
     private final CamelContext camelContext;
 
     private RouteBuilder routeBuilder;
@@ -41,6 +42,7 @@ public class RouterDispatcher {
                             int completionSize,
                             long completionIntervalMillis,
                             MessagePublisher publisher,
+                            String deadLetterChannel,
                             CamelContext camelContext) {
         this.routeId = routeId;
         this.fromUri = fromUri;
@@ -50,6 +52,7 @@ public class RouterDispatcher {
         this.completionSize = completionSize;
         this.completionIntervalMillis = completionIntervalMillis;
         this.publisher = publisher;
+        this.deadLetterChannel = deadLetterChannel;
         this.camelContext = camelContext;
     }
 
@@ -93,7 +96,7 @@ public class RouterDispatcher {
                 this.aggregationStrategy,
                 this.completionSize,
                 this.completionIntervalMillis,
-                this.publisher
-        );
+                this.publisher,
+                this.deadLetterChannel);
     }
 }

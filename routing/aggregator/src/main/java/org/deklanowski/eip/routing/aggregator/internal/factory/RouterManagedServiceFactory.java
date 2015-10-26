@@ -38,6 +38,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
     private static final String ROUTE_COMPLETION_INTERVAL_MILLIS = "route.completion-interval-millis";
     private static final String ROUTE_TRANSFORMER_TYPE = "route.transformer.type";
     private static final String ROUTE_AGGREGATION_TYPE = "route.aggregation.type";
+    private static final String ROUTE_DEADLETTER_URI = "route.deadletter.uri";
 
 
     /**
@@ -259,53 +260,22 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
                 getAggregationStrategy(properties), Integer.parseInt((String) properties.get(ROUTE_COMPLETION_SIZE)),
                 Long.parseLong((String) properties.get(ROUTE_COMPLETION_INTERVAL_MILLIS)),
                 getMessagePublisher(properties),
+                getDeadLetterChannel(properties),
                 camelContext);
 
         return dispatcher;
     }
 
-    private String getFilterExpression(Dictionary<String, ?> properties) {
-        return (String) properties.get(ROUTE_FILTER_EXPRESSION);
-    }
-
-
-    /**
-     * Get destination publisher instance. If there is a registered instance of the
-     * desired type use it otherwise check it a camel uri was configured and create
-     * a publisher instance backed by a {@link ProducerTemplate}.
-     * @param properties route properties
-     * @return {@link MessagePublisher} instance
-     * @throws NullPointerException if it was not possible to choose a destination.
-     */
-    private MessagePublisher getMessagePublisher(Dictionary<String, ?> properties) {
-        String publisherServiceKey = (String) properties.get(ROUTE_TO_PUBLISHER);
-        String routeToUri = (String) properties.get(ROUTE_TO_URI);
-
-        MessagePublisher publisher = null;
-
-        if (StringUtils.isNotBlank(publisherServiceKey)) {
-           publisher = messagePublishers.get(publisherServiceKey);
-        }
-
-        if (publisher == null) {
-            logger.debug("No registered publisher of type {} found",publisherServiceKey);
-            if (routeToUri != null) {
-                logger.debug("Creating CamelEventPublisher instance with route destination {}",routeToUri);
-                ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-                publisher = new CamelMessagePublisher(producerTemplate);
-                producerTemplate.setDefaultEndpointUri(routeToUri);
-            }
-        }
-
-        Preconditions.checkNotNull(publisher, "No destination strategy possible for route " + getRouteId(properties));
-
-
-        return publisher;
-    }
 
     private String getRouteId(Dictionary<String, ?> properties) {
         return (String) properties.get(ROUTE_ID);
     }
+
+
+    private String getFilterExpression(Dictionary<String, ?> properties) {
+        return (String) properties.get(ROUTE_FILTER_EXPRESSION);
+    }
+
 
     /**
      * Get a transformer instance
@@ -321,6 +291,8 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
         Preconditions.checkNotNull(transformer,"Transformer instance of type"+type+" not registered, can't go on");
         return transformer;
     }
+
+
 
     /**
      * Create an aggregation strategy with the selected factory. If no factory of the specifed type
@@ -346,5 +318,45 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
         }
 
         return strategy == null ? new GroupedExchangeAggregationStrategy() : strategy;
+    }
+
+
+    /**
+     * Get destination publisher instance. If there is a registered instance of the
+     * desired type use it otherwise check it a camel uri was configured and create
+     * a publisher instance backed by a {@link ProducerTemplate}.
+     * @param properties route properties
+     * @return {@link MessagePublisher} instance
+     * @throws NullPointerException if it was not possible to choose a destination.
+     */
+    private MessagePublisher getMessagePublisher(Dictionary<String, ?> properties) {
+        String publisherServiceKey = (String) properties.get(ROUTE_TO_PUBLISHER);
+        String routeToUri = (String) properties.get(ROUTE_TO_URI);
+
+        MessagePublisher publisher = null;
+
+        if (StringUtils.isNotBlank(publisherServiceKey)) {
+            publisher = messagePublishers.get(publisherServiceKey);
+        }
+
+        if (publisher == null) {
+            logger.debug("No registered publisher of type {} found",publisherServiceKey);
+            if (routeToUri != null) {
+                logger.debug("Creating CamelEventPublisher instance with route destination {}",routeToUri);
+                ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
+                publisher = new CamelMessagePublisher(producerTemplate);
+                producerTemplate.setDefaultEndpointUri(routeToUri);
+            }
+        }
+
+        Preconditions.checkNotNull(publisher, "No destination strategy possible for route " + getRouteId(properties));
+
+
+        return publisher;
+    }
+
+    private String getDeadLetterChannel(Dictionary<String, ?> properties) {
+        String dlq = (String) properties.get(ROUTE_DEADLETTER_URI);
+        return dlq != null ? dlq : "log:DLQ";
     }
 }

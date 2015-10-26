@@ -36,8 +36,8 @@ public class AggregatingRouterStringToStringTest extends CamelTestSupport
                 "${in.header.id} == 'declan'",
                 1,
                 1000L,
-                new CamelMessagePublisher(producer)
-        );
+                new CamelMessagePublisher(producer),
+                errorEndpoint);
     }
 
 

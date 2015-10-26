@@ -1,12 +1,7 @@
 package org.deklanowski.eip.routing.aggregator.internal;
 
 import com.google.common.base.Preconditions;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.Predicate;
-import org.apache.camel.builder.ExpressionClause;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.AggregateDefinition;
-import org.apache.camel.model.FilterDefinition;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
@@ -37,9 +32,12 @@ public final class AggregatingRouter extends RouteBuilder {
     private final int completionSize;
     private final long completionIntervalMillis;
     private final MessagePublisher publisher;
+    private final String deadletterChannel;
 
     /**
      * Configurable aggregating router.
+     * @param <I> input message type
+     * @param <O> transformed message type
      * @param routeId identifier for the route
      * @param routeFrom consuming uri
      * @param transformer {@link Transformer} implementation
@@ -48,8 +46,7 @@ public final class AggregatingRouter extends RouteBuilder {
      * @param completionSize max number of elements in an aggregation
      * @param completionIntervalMillis max length of time and aggregation shall live
      * @param publisher publishing interface, publishes collections of messages of type O (see {@link Transformer}
-     * @param <I> input message type
-     * @param <O> transformed message type
+     * @param deadletterChannel where to send exchanges in exceptional circumstances
      * @throws NullPointerException if any of the mandatory arguments is null
      * @throws IllegalArgumentException if arguments are found to be invalid
      */
@@ -60,8 +57,8 @@ public final class AggregatingRouter extends RouteBuilder {
                                     AggregationStrategy aggregationStrategy,
                                     int completionSize,
                                     long completionIntervalMillis,
-                                    MessagePublisher publisher) {
-
+                                    MessagePublisher publisher,
+                                    String deadletterChannel) {
         Preconditions.checkArgument(StringUtils.isNotBlank(routeId),"Please specify a non-blank routeId");
         this.routeId = routeId;
 
@@ -80,11 +77,15 @@ public final class AggregatingRouter extends RouteBuilder {
         Preconditions.checkArgument(completionIntervalMillis > 0, "Negative completionIntervalMillis specified");
         this.completionIntervalMillis = completionIntervalMillis;
 
-        this.publisher = Preconditions.checkNotNull(publisher,"Message publisher may not be null");;
+        this.publisher = Preconditions.checkNotNull(publisher,"Message publisher may not be null");
+
+        this.deadletterChannel = deadletterChannel;
     }
 
     /**
      * Configurable aggregating router with default {@link GroupedExchangeAggregationStrategy}
+     * @param <I> input message type
+     * @param <O> transformed message type
      * @param routeId identifier for the route
      * @param routeFrom consuming uri
      * @param transformer {@link Transformer} implementation
@@ -92,8 +93,7 @@ public final class AggregatingRouter extends RouteBuilder {
      * @param completionSize max number of elements in an aggregation
      * @param completionIntervalMillis max length of time and aggregation shall live
      * @param publisher publishing interface, publishes collections of messages of type O (see {@link Transformer}
-     * @param <I> input message type
-     * @param <O> transformed message type
+     * @param deadletterChannel where to send exchanges in exceptional circumstances
      * @throws NullPointerException if any of the mandatory arguments is null
      * @throws IllegalArgumentException if arguments are found to be invalid
      */
@@ -103,8 +103,9 @@ public final class AggregatingRouter extends RouteBuilder {
                                     String filterExpression,
                                     int completionSize,
                                     long completionIntervalMillis,
-                                    MessagePublisher publisher) {
-        this(routeId, routeFrom, transformer, filterExpression, new GroupedExchangeAggregationStrategy(), completionSize, completionIntervalMillis, publisher);
+                                    MessagePublisher publisher,
+                                    String deadletterChannel) {
+        this(routeId, routeFrom, transformer, filterExpression, new GroupedExchangeAggregationStrategy(), completionSize, completionIntervalMillis, publisher, deadletterChannel);
     }
 
 
@@ -136,6 +137,12 @@ public final class AggregatingRouter extends RouteBuilder {
                 .completionSize(this.completionSize)
                 .completionInterval(this.completionIntervalMillis)
                 .process(new MessagePublisherProcessor(this.publisher)).id(getPublishId());
+
+
+
+        errorHandler(deadLetterChannel(this.deadletterChannel)
+                .maximumRedeliveries(3)
+                .redeliveryDelay(5000));
     }
 
 

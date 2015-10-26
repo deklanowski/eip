@@ -36,8 +36,8 @@ public class AggregatingRouterIntegerToStringTest extends CamelTestSupport
                 "${in.header.id} == null",
                 1,
                 1000L,
-                new CamelMessagePublisher(producer)
-        );
+                new CamelMessagePublisher(producer),
+                errorEndpoint);
     }
 
 
