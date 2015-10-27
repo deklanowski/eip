@@ -33,7 +33,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
     private static final String ROUTE_FROM_URI = "route.from.uri";
     private static final String ROUTE_TO_URI = "route.to.uri";
     private static final String ROUTE_FILTER_EXPRESSION = "route.filter.expression";
-    private static final String ROUTE_TO_PUBLISHER = "route.to.publisher";
+    private static final String ROUTE_PUBLISHER_TYPE = "route.publisher.type";
     private static final String ROUTE_COMPLETION_SIZE = "route.completion-size";
     private static final String ROUTE_COMPLETION_INTERVAL_MILLIS = "route.completion-interval-millis";
     private static final String ROUTE_TRANSFORMER_TYPE = "route.transformer.type";
@@ -330,7 +330,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
      * @throws NullPointerException if it was not possible to choose a destination.
      */
     private MessagePublisher getMessagePublisher(Dictionary<String, ?> properties) {
-        String publisherServiceKey = (String) properties.get(ROUTE_TO_PUBLISHER);
+        String publisherServiceKey = (String) properties.get(ROUTE_PUBLISHER_TYPE);
         String routeToUri = (String) properties.get(ROUTE_TO_URI);
 
         MessagePublisher publisher = null;

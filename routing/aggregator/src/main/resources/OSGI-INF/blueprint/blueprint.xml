@@ -12,43 +12,43 @@
                              update-strategy="reload">
         <cm:default-properties>
             <cm:property name="factory.pid"
-                         value="event_router"/>
+                         value="message_router"/>
         </cm:default-properties>
     </cm:property-placeholder>
 
 
     <!--
-         The camel context we create here is injected into the eventRouterFactory and will host
+         The camel context we create here is injected into the messageRouterFactory and will host
          all created router instances.
     -->
-    <camelContext id="eventRouterContext"
+    <camelContext id="messageRouterContext"
                   managementNamePattern="drs-#camelId#"
                   xmlns="http://camel.apache.org/schema/blueprint" autoStartup="true">
     </camelContext>
 
     <!-- Managed service factory: this creates routing instances from (hot) deployed configuration files -->
-    <bean id="eventRouterFactory" class="org.deklanowski.eip.routing.aggregator.internal.factory.RouterManagedServiceFactory"
+    <bean id="messageRouterFactory" class="org.deklanowski.eip.routing.aggregator.internal.factory.RouterManagedServiceFactory"
           init-method="init"
           destroy-method="destroy">
         <property name="bundleContext" ref="blueprintBundleContext"/>
         <property name="configurationPid" value="${factory.pid}"/>
-        <property name="camelContext" ref="eventRouterContext"/>
+        <property name="camelContext" ref="messageRouterContext"/>
     </bean>
 
 
     <!-- Track all registered transformers -->
     <reference-list id="transformers" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.Transformer">
-        <reference-listener ref="eventRouterFactory" bind-method="registerTransformer" unbind-method="unregisterTransformer" />
+        <reference-listener ref="messageRouterFactory" bind-method="registerTransformer" unbind-method="unregisterTransformer" />
     </reference-list>
 
     <!-- Track all registered aggregation strategies -->
     <reference-list id="aggregationStrategyFactories" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.AggregationStrategyFactory">
-        <reference-listener ref="eventRouterFactory" bind-method="registerAggregationStrategyFactory" unbind-method="unregisterAggregationStrategyFactory" />
+        <reference-listener ref="messageRouterFactory" bind-method="registerAggregationStrategyFactory" unbind-method="unregisterAggregationStrategyFactory" />
     </reference-list>
 
     <!-- Track all registered event publishers -->
     <reference-list id="messagePublishers" availability="optional" activation="eager" interface="org.deklanowski.eip.spi.MessagePublisher">
-        <reference-listener ref="eventRouterFactory" bind-method="registerMessagePublisher" unbind-method="unregisterMessagePublisher" />
+        <reference-listener ref="messageRouterFactory" bind-method="registerMessagePublisher" unbind-method="unregisterMessagePublisher" />
     </reference-list>
 
 
