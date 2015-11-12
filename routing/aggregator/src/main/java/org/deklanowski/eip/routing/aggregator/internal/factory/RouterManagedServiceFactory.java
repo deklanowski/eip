@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("unchecked")
 public class RouterManagedServiceFactory implements ManagedServiceFactory {
@@ -44,7 +45,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
     /**
      * Track {@link RouterDispatcher}instances we have created.
      */
-    private Map<String, RouterDispatcher> dispatchers = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, RouterDispatcher> dispatchers = new ConcurrentHashMap<>();
 
     /** Map all registered {@link AggregationStrategy} instances */
     private ServiceRegistry<AggregationStrategyFactory> strategies = new ServiceRegistryImpl<>("type");

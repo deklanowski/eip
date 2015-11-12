@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="data-repository-sandbox-integration-${project.version}"
+<features name="eip-${project.version}"
           xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="
@@ -12,13 +12,13 @@
 
     <feature name="eip-routing" version="${project.version}" description="EIP routing support">
         <feature version="${project.version}">eip-camel</feature>
-        <feature version="[2.15,3)">camel-blueprint</feature>
+        <feature version="[2.12,3)">camel-blueprint</feature>
         <bundle>mvn:org.deklanowski.eip.routing/aggregator/${project.version}</bundle>
     </feature>
 
     <feature name="eip-camel" version="${project.version}" description="EIP Camel support">
         <feature version="${project.version}">eip-spi</feature>
-        <feature version="[2.15,3)">camel-core</feature>
+        <feature version="[2.12,3)">camel-core</feature>
         <bundle>mvn:org.deklanowski.eip/camel/${project.version}</bundle>
     </feature>
 

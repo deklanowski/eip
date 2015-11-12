@@ -18,35 +18,35 @@
         <processorPath useClasspath="true" />
       </profile>
       <profile default="false" name="Annotation profile for camel" enabled="true">
-        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="camel" />
       </profile>
       <profile default="false" name="Annotation profile for transformers" enabled="true">
-        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="transformers" />
       </profile>
       <profile default="false" name="Annotation profile for features" enabled="true">
-        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="features" />
       </profile>
       <profile default="false" name="Annotation profile for aggregator" enabled="true">
-        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="aggregator" />
       </profile>
       <profile default="false" name="Annotation profile for spi" enabled="true">
-        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
@@ -55,7 +55,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="aggregator" target="1.8" />
-      <module name="build" target="1.8" />
+      <module name="build" target="1.7" />
       <module name="camel" target="1.8" />
       <module name="features" target="1.8" />
       <module name="parent" target="1.8" />

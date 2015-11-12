@@ -20,7 +20,12 @@ public class AggregatingRouterIntegerToStringTest extends CamelTestSupport
     @EndpointInject(uri = MOCK_RESULT)
     private MockEndpoint result;
 
-    private Transformer<Integer,String> transformer = String::valueOf;
+    private Transformer<Integer,String> transformer = new Transformer<Integer, String>() {
+        @Override
+        public String transform(Integer input) {
+            return String.valueOf(input);
+        }
+    };
 
 
     @Override
