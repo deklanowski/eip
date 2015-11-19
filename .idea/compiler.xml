@@ -54,14 +54,14 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="aggregator" target="1.8" />
+      <module name="aggregator" target="1.7" />
       <module name="build" target="1.7" />
-      <module name="camel" target="1.8" />
-      <module name="features" target="1.8" />
-      <module name="parent" target="1.8" />
-      <module name="routing" target="1.8" />
-      <module name="spi" target="1.8" />
-      <module name="transformers" target="1.8" />
+      <module name="camel" target="1.7" />
+      <module name="features" target="1.7" />
+      <module name="parent" target="1.7" />
+      <module name="routing" target="1.7" />
+      <module name="spi" target="1.7" />
+      <module name="transformers" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

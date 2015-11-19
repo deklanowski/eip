@@ -289,7 +289,7 @@ public class RouterManagedServiceFactory implements ManagedServiceFactory {
         type = Preconditions.checkNotNull(type,"Transformer service key not specified, can't go on");
 
         Transformer<?,?> transformer = transformers.get(type);
-        Preconditions.checkNotNull(transformer,"Transformer instance of type"+type+" not registered, can't go on");
+        Preconditions.checkNotNull(transformer,"Transformer instance of type "+type+" not registered, can't go on");
         return transformer;
     }
 

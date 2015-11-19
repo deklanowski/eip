@@ -6,19 +6,22 @@
         http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
 
     <feature name="eip" version="${project.version}" description="EIP Service Provider Interfaces">
-        <feature version="${project.version}">eip-routing</feature>
         <feature version="${project.version}">eip-transformers</feature>
+        <feature version="${project.version}">eip-routing</feature>
     </feature>
 
     <feature name="eip-routing" version="${project.version}" description="EIP routing support">
         <feature version="${project.version}">eip-camel</feature>
-        <feature version="[2.12,3)">camel-blueprint</feature>
+        <feature version="[2.14,3)">camel-metrics</feature>
+        <feature version="[2.14,3)">camel-blueprint</feature>
+        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
+        <bundle>mvn:org.apache.commons/commons-lang3/${commons-lang3.version}</bundle>
         <bundle>mvn:org.deklanowski.eip.routing/aggregator/${project.version}</bundle>
     </feature>
 
     <feature name="eip-camel" version="${project.version}" description="EIP Camel support">
         <feature version="${project.version}">eip-spi</feature>
-        <feature version="[2.12,3)">camel-core</feature>
+        <feature version="[2.14,3)">camel-core</feature>
         <bundle>mvn:org.deklanowski.eip/camel/${project.version}</bundle>
     </feature>
 
@@ -33,12 +36,10 @@
 
 
     <feature name="eip-dev" version="${project.version}" description="Artifacts for dev testing">
-        <feature version="[2.15,3)">camel-kafka</feature>
+        <feature version="[2.14,3)">camel-kafka</feature>
         <bundle>mvn:org.slf4j/slf4j-api/${slf4j.version}</bundle>
         <bundle>mvn:org.slf4j/slf4j-log4j12/${slf4j.version}</bundle>
         <bundle>mvn:log4j/log4j/${log4j.version}</bundle>
-        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
-        <bundle>mvn:org.apache.commons/commons-lang3/${commons-lang3.version}</bundle>
     </feature>
 
 </features>

@@ -2,6 +2,7 @@ package org.deklanowski.eip.routing.aggregator.internal;
 
 import com.google.common.base.Preconditions;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.metrics.MetricsConstants;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
@@ -126,10 +127,12 @@ public final class AggregatingRouter extends RouteBuilder {
                 .maximumRedeliveries(3)
                 .redeliveryDelay(5000));
 
-        RouteDefinition routeDefinition = from(this.routeFrom).routeId(this.routeId);
+        RouteDefinition routeDefinition = from(this.routeFrom)
+                .routeId(this.routeId);
 
 
         ProcessorDefinition processorDefinition = routeDefinition.bean(this.transformer);
+
 
 
         // only build in a filter if the expression was specified.
@@ -137,14 +140,15 @@ public final class AggregatingRouter extends RouteBuilder {
             processorDefinition = processorDefinition.filter(simple(this.filterExpression));
         }
 
+        final String messageCounterName = this.routeId+".message.count";
 
-        processorDefinition.aggregate(constant(true), this.aggregationStrategy)
+        processorDefinition
+                .setHeader(MetricsConstants.HEADER_METRIC_NAME, constant(messageCounterName))
+                //.to("metrics:counter:"+messageCounterName+"?useJmx=true")
+                .aggregate(constant(true), this.aggregationStrategy)
                 .completionSize(this.completionSize)
                 .completionInterval(this.completionIntervalMillis)
                 .process(new MessagePublisherProcessor(this.publisher)).id(getPublishId());
-
-
-
     }
 
 
