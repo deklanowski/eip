@@ -22,7 +22,7 @@
          all created router instances.
     -->
     <camelContext id="messageRouterContext"
-                  managementNamePattern="drs-#camelId#"
+                  managementNamePattern="eip-#camelId#"
                   xmlns="http://camel.apache.org/schema/blueprint" autoStartup="true">
     </camelContext>
 
